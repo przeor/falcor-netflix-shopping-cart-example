@@ -25,14 +25,34 @@
         }
       });
 
+      var newProduct = {
+          name: "KAMIL Product ABC DZIALA",
+          otherAdd: "KAMIL something 1"
+      };
+
       model.
         getValue("_view[0].name").
         then(function(response1) { 
           console.log( response1 );
           model.
-            setValue("_view[0].name", "Another book").
+            setValue("productsById[3]", newProduct).
             subscribe(function(response2){
-              console.log( response2 );
+              console.log("test1 ", response2 );
+              model.
+                getValue("productsById[3]", newProduct).
+                subscribe(function(response3){
+                  console.log("response3", response3);
+                  var newProductRef = $ref('productsById[3]');
+                  model.
+                    setValue("_view[3]", newProductRef).
+                    subscribe(function(response4){
+                      model.
+                        getValue("_view[3].name").
+                        then(function(response5) { 
+                          console.log("DZIALA", response5 );
+                        });
+                    });
+                });
             });
         });
     </script>
