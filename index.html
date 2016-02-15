@@ -1,0 +1,42 @@
+<!-- index.html -->
+<html>
+  <head>
+    <!-- Do _not_  rely on this URL in production. Use only during development.  -->
+    <script src="https://netflix.github.io/falcor/build/falcor.browser.js"></script>
+    <!-- For production use. -->
+    <!-- <script src="https://cdn.jsdelivr.net/falcor/{VERSION}/falcor.browser.min.js"></script> -->
+    <script>
+      var $ref = falcor.Model.ref;
+      var model = new falcor.Model({
+        cache: {
+            productsById: {
+                 1: {
+                     name: "Product ABC",
+                     otherAdd: "something 1"
+                 },
+                 2: {
+                     name: "Product 123",
+                     otherAdd: "something 2"
+                 },
+
+            },
+            _view: [ $ref('productsById[1]') ],
+            _cart: []
+        }
+      });
+
+      model.
+        getValue("_view[0].name").
+        then(function(response1) { 
+          console.log( response1 );
+          model.
+            setValue("_view[0].name", "Another book").
+            subscribe(function(response2){
+              console.log( response2 );
+            });
+        });
+    </script>
+  </head>
+  <body>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "name": "falcor-netflix-shopping-cart-example",
+  "version": "0.1.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "falcor",
+    "falcorjs",
+    "falcor.js"
+  ],
+  "author": "Auth0",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.14.0",
+    "dotenv": "^1.2.0",
+    "express": "^4.13.3",
+    "express-jwt": "^3.1.0",
+    "falcor": "^0.1.12",
+    "falcor-express": "^0.1.2",
+    "falcor-router": "^0.2.9"
+  }
+}
