@@ -8,28 +8,58 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-var $ref = falcor.Model.ref;
-var model = new falcor.Model({
-  cache: {
-      productsById: {
-           1: {
-               name: "Product ABC from backend",
-               otherAdd: "something 1"
-           },
+// var $ref = falcor.Model.ref;
+// var model = new falcor.Model({
+//   cache: {
+//       productsById: {
+//            1: {
+//                name: "Product ABC from backend",
+//                otherAdd: "something 1"
+//            },
 
-      },
-      _view: [ $ref('productsById[1]') ],
-      _cart: []
-  }
-});
+//       },
+//       _view: [ $ref('productsById[1]') ],
+//       _cart: []
+//   }
+// });
 
+var jsonGraph = require('falcor-json-graph');
+var $ref = jsonGraph.ref;
+var $error = jsonGraph.error;
 
 // serve static files from current directory
 app.use(express.static(__dirname + '/'));
 
 app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
   // data source interface goes here
-  return model.asDataSource();
+  return new Router([
+    {
+      route: "productsById[{integers}].name",
+      get: function(pathSet) {
+        console.log("IS productsById !!!");
+        console.log("IS productsById !!!");
+        return {
+          path:["productsById", 123], 
+          value: {
+               name: "Product ABC from backend",
+               otherAdd: "something 1"
+           }
+        };
+      }
+    },
+    {
+      // match a request for the key "greeting"
+      route: "_view[{integers}].name",
+      // respond with a PathValue with the value of "Hello World."
+      get: function(pathSet) {
+        console.log("newRef is doesn't lookup for productsById :-(");
+        return {
+          path:["_view", 123, "name"], 
+          value: $ref(['productsById', 123])
+        };
+      }
+    }
+  ]);
 }))
 
 

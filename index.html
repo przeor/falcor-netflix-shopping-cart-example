@@ -17,7 +17,7 @@
       };
 
       model.
-        getValue("_view[0].name").
+        getValue(["_view", 123, "name"]).
         then(function(response1) {
           console.log( response1 );
 
