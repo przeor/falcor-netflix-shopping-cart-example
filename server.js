@@ -36,10 +36,10 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
     {
       route: "productsById[{integers}].name",
       get: function(pathSet) {
-        console.log("IS productsById !!!");
-        console.log("IS productsById !!!");
+        console.log("This route is called as a second.");
+        console.log("Calling productsById from _view via $ref(['productsById', 123])", pathSet);
         return {
-          path:["productsById", 123, "name"], 
+          path:["productsById", 123], 
           value: {
                name: "Product ABC from backend",
                otherAdd: "something 1"
@@ -49,12 +49,12 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
     },
     {
       // match a request for the key "greeting"
-      route: "_view[{integers}].name",
+      route: "_view[{integers}]",
       // respond with a PathValue with the value of "Hello World."
       get: function(pathSet) {
-        console.log("newRef is doesn't lookup for productsById :-(");
+        console.log("This route is called first.");
         return {
-          path:["_view", 123, "name"], 
+          path:["_view", 123], 
           value: $ref(['productsById', 123])
         };
       }
