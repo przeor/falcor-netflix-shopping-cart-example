@@ -39,7 +39,7 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
         console.log("IS productsById !!!");
         console.log("IS productsById !!!");
         return {
-          path:["productsById", 123], 
+          path:["productsById", 123, "name"], 
           value: {
                name: "Product ABC from backend",
                otherAdd: "something 1"
