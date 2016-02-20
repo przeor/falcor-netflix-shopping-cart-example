@@ -19,6 +19,31 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
   // data source interface goes here
   return new Router([
     {
+        route: 'genrelist[{integers:indices}].titles.remove',
+        call: function(callPath, args) {
+            
+            if (this.userId == undefined)
+                throw new Error("not authorized");
+
+            var genreIndex = callPath.indices[0], titleIndex = args[0];
+
+            return recommendationService.
+                removeTitleFromGenreListByIndex(this.userId, genreIndex, titleIndex).
+                then(function(titleIdAndLength) {
+                    return [
+                        {
+                            path: ['genrelist', genreIndex, 'titles', {from: titleIndex, to: titleIdAndLength.length }],
+                            invalidated: true
+                        },
+                        {
+                            path: ['genrelist', genreIndex, 'titles', 'length'],
+                            value: titleIdAndLength.length
+                        }
+                    ];
+                });
+        }
+    },
+    {
       route: "productsById[{integers}]",
       set: function(pathSet) {
 
@@ -31,6 +56,8 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
         /*
           here we save stuff to DB
          */
+
+        console.log(JSON.stringify(pathSet, null, 4));
 
         return {
           path:["productsById", newProductId], 
