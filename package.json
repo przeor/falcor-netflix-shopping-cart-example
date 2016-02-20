@@ -21,5 +21,9 @@
     "falcor": "^0.1.12",
     "falcor-express": "^0.1.2",
     "falcor-router": "^0.2.9"
+  },
+  "devDependencies": {
+    "webpack-dev-middleware": "^1.5.1",
+    "webpack-hot-middleware": "^2.7.1"
   }
 }

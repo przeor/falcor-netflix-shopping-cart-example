@@ -8,21 +8,6 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({extended: true}));
 
 
-// var $ref = falcor.Model.ref;
-// var model = new falcor.Model({
-//   cache: {
-//       productsById: {
-//            1: {
-//                name: "Product ABC from backend",
-//                otherAdd: "something 1"
-//            },
-
-//       },
-//       _view: [ $ref('productsById[1]') ],
-//       _cart: []
-//   }
-// });
-
 var jsonGraph = require('falcor-json-graph');
 var $ref = jsonGraph.ref;
 var $error = jsonGraph.error;
@@ -33,6 +18,30 @@ app.use(express.static(__dirname + '/'));
 app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
   // data source interface goes here
   return new Router([
+    {
+      route: "productsById[{integers}]",
+      set: function(pathSet) {
+        console.log("%%%%%%");
+        console.log("we are in set route for a new productsById");
+        console.log("SET pathSet", pathSet);
+
+        var newProductId = 999;
+        
+        /*
+          here we save stuff to DB
+         */
+
+        return {
+          path:["productsById", newProductId], 
+          value: {
+               name: "Product ABC from backend",
+               otherAdd: "something 1"
+           }
+        };
+
+      }
+    },
+
     {
       route: "productsById[{integers}].name",
       get: function(pathSet) {
@@ -47,11 +56,14 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
         };
       }
     },
+
     {
       // match a request for the key "greeting"
       route: "_view[{integers}]",
       // respond with a PathValue with the value of "Hello World."
       get: function(pathSet) {
+        console.log("1. pathSet", pathSet);
+        console.log("-----");
         console.log("This route is called first.");
         return {
           path:["_view", 123], 
@@ -63,6 +75,30 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
 }))
 
 
+
+
+// var $ref = falcor.Model.ref;
+// var model = new falcor.Model({
+//   cache: {
+//       productsById: {
+//            1: {
+//                name: "Product ABC from backend haha",
+//                otherAdd: "something 1"
+//            },
+//       },
+//       _view: [ $ref('productsById[1]') ],
+//       _cart: []
+//   }
+// });
+
+
+// // serve static files from current directory
+// app.use(express.static(__dirname + '/'));
+
+// app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
+//   // data source interface goes here
+//   return model.asDataSource();
+// }))
 
 
 app.listen(3001);
