@@ -21,32 +21,27 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
     {
       route: "productsById[{integers}]",
       set: function(pathSet) {
-        console.log("%%%%%%");
-        console.log("we are in set route for a new productsById");
-        console.log("SET pathSet", pathSet);
 
         var newProductId = 999;
-        
+        var newProduct = {
+            name: "321BACKEND KAMIL Product ABC DZIALA",
+            otherAdd: "321BACKEND KAMIL something 1",
+            id: newProductId
+        };
         /*
           here we save stuff to DB
          */
 
         return {
           path:["productsById", newProductId], 
-          value: {
-               name: "Product ABC from backend",
-               otherAdd: "something 1"
-           }
+          value: newProduct
         };
 
       }
     },
-
     {
       route: "productsById[{integers}].name",
       get: function(pathSet) {
-        console.log("This route is called as a second.");
-        console.log("Calling productsById from _view via $ref(['productsById', 123])", pathSet);
         return {
           path:["productsById", 123], 
           value: {
@@ -56,7 +51,6 @@ app.use('/model.json', falcorExpress.dataSourceRoute(function(req, res) {
         };
       }
     },
-
     {
       // match a request for the key "greeting"
       route: "_view[{integers}]",
