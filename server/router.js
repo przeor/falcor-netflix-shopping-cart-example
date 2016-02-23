@@ -3,6 +3,18 @@ var $ref = jsonGraph.ref;
 var $error = jsonGraph.error;
 
 
+var viewAddResponsePromise = new Promise(function(resolve, reject) {
+  // do a thing, possibly async, then…
+
+  if (true) {
+    resolve("----- \n ---- Stuff worked!");
+  }
+  else {
+    reject(Error("It broke"));
+  }
+});
+
+
 var Router = require('falcor-router'),
   mockedMongoDB = require('./mocked-mongo'),
   ProductsRouter = Router.createClass([{
@@ -99,22 +111,26 @@ var Router = require('falcor-router'),
           This function is not optimised yet.
 
          */
-        var newProduct = args[0];
-        console.log("ADDDING!", callPath);
-        console.log("args!", args);
-        mockedMongoDB[0]._view.push({
-          name: newProduct
+        var newProduct = args[0]; 
+        return viewAddResponsePromise.then(function(result) {
+
+          newProduct = newProduct+" (please note that this comes from async mocked call to DB)";
+
+          mockedMongoDB[0]._view.push({
+            name: newProduct
+          });
+
+          return [{
+            path: ['_view', mockedMongoDB[0]._view.length - 1, 'name'],
+            value: newProduct
+          }, {
+            path: ['_view', 'length'],
+            value: mockedMongoDB[0]._view.length
+          }];
+
+        }, function(err) {
+          console.log(err); // Error: "It has broken"
         });
-
-        console.log(JSON.stringify(mockedMongoDB, null, 5));
-
-        return [{
-          path: ['_view', mockedMongoDB[0]._view.length - 1, 'name'],
-          value: newProduct
-        }, {
-          path: ['_view', 'length'],
-          value: mockedMongoDB[0]._view.length
-        }]
       }
     }
   ])
