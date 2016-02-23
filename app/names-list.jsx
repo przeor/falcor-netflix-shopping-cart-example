@@ -26,6 +26,7 @@ class NamesList extends React.Component {
         model.getValue(['_view', 'length'])
             .then(length => model.get(['_view', {from: 0, to: length-1}, 'name']))
             .then(response => { 
+                console.log("length", length);
                 console.log(JSON.stringify(response.json, null, 4)); 
                 this.setState({names: response.json._view})
             });

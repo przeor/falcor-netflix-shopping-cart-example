@@ -14,7 +14,7 @@ module.exports = [
   {
     productsById: {
          959: {
-             name: "Product ABC from backend haha",
+             name: "YES, YES - Product ABC from backend haha",
              otherAdd: "something 1"
          },
     },
