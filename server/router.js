@@ -5,7 +5,7 @@ var $error = jsonGraph.error;
 
 var Router = require('falcor-router'),
   mockedMongoDB = require('./mocked-mongo'),
-  NamesRouter = Router.createClass([{
+  ProductsRouter = Router.createClass([{
       route: '_view.length',
       get: () => {
         /*
@@ -22,9 +22,11 @@ var Router = require('falcor-router'),
             The _view.length helps us to know how many items are in the array before asking for them specificaly
             in the route _view[{integers}]
          */
+        
+        var viewArrayLenght = mockedMongoDB[0]._view.length;
         var results = {
           path: ['_view', 'length'],
-          value: mockedMongoDB[0]._view.length
+          value: viewArrayLenght
         };
         console.log("1) *************** \n *************** \n ****** FIRST request in order to get known how many items are in the _view array before asking for specific elements from the array \n  *************** \n ");
         console.log(JSON.stringify(results, null, 5));
@@ -44,13 +46,21 @@ var Router = require('falcor-router'),
             because on the first look it was not intuitive approach for me (so I wasted time to make this lesson).
          */
         var results = [];
-        var nameIndexes = pathSet[1];
-        nameIndexes.forEach(nameIndex => {
-          if (mockedMongoDB[0]._view.length > nameIndex) {
-            var currentProductId = mockedMongoDB[0]._view[nameIndex];
+        
+
+        // this is a range of how 
+        // many products have to be fetched from mongo's products collection
+        var productsIndexesIds = pathSet[1];
+
+        productsIndexesIds.forEach(productIndex => {
+          if (mockedMongoDB[0]._view.length > productIndex) {
+            // mongoDbProductId is a product ID that comes from products' collection 
+            // (currently mocked and comes from mocked-mongo.js)
+            var mongoDbProductId = mockedMongoDB[0]._view[productIndex];
+            var currentProductRef = $ref(['productsById', [mongoDbProductId]]);
             results.push({
-              path: ['_view', nameIndex],
-              value: $ref(['productsById', [currentProductId]])  // it has to return a $ref here
+              path: ['_view', productIndex],
+              value: currentProductRef  // it has to return a $ref here
             })
           }
         });
@@ -89,18 +99,18 @@ var Router = require('falcor-router'),
           This function is not optimised yet.
 
          */
-        var newName = args[0];
+        var newProduct = args[0];
         console.log("ADDDING!", callPath);
         console.log("args!", args);
         mockedMongoDB[0]._view.push({
-          name: newName
+          name: newProduct
         });
 
         console.log(JSON.stringify(mockedMongoDB, null, 5));
 
         return [{
           path: ['_view', mockedMongoDB[0]._view.length - 1, 'name'],
-          value: newName
+          value: newProduct
         }, {
           path: ['_view', 'length'],
           value: mockedMongoDB[0]._view.length
@@ -109,4 +119,4 @@ var Router = require('falcor-router'),
     }
   ])
 
-module.exports = NamesRouter
+module.exports = ProductsRouter
