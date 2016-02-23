@@ -1,29 +1,47 @@
 {
-  "name": "falcor-netflix-shopping-cart-example",
-  "version": "0.1.0",
+  "name": "fullstack-react",
+  "version": "2.0.0",
   "description": "",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "keywords": [
-    "falcor",
-    "falcorjs",
-    "falcor.js"
-  ],
-  "author": "Auth0",
+  "main": "./site/bundle.js",
+  "author": "",
   "license": "MIT",
   "dependencies": {
-    "body-parser": "^1.14.0",
-    "dotenv": "^1.2.0",
-    "express": "^4.13.3",
-    "express-jwt": "^3.1.0",
-    "falcor": "^0.1.12",
-    "falcor-express": "^0.1.2",
-    "falcor-router": "^0.2.9"
+    "body-parser": "1.15.0",
+    "express": "4.13.4",
+    "falcor": "0.1.16",
+    "falcor-express": "0.1.2",
+    "falcor-http-datasource": "0.1.3",
+    "falcor-router": "0.2.12",
+    "react": "0.14.7",
+    "react-dom": "0.14.7"
   },
   "devDependencies": {
-    "webpack-dev-middleware": "^1.5.1",
-    "webpack-hot-middleware": "^2.7.1"
+    "babel-cli": "6.5.1",
+    "babel-core": "6.5.1",
+    "babel-loader": "6.2.2",
+    "babel-plugin-rewire": "1.0.0-beta-5",
+    "babel-preset-es2015": "6.5.0",
+    "babel-preset-react": "6.5.0",
+    "jasmine": "2.4.1",
+    "jasmine-core": "2.4.1",
+    "karma": "0.13.19",
+    "karma-jasmine": "0.3.7",
+    "karma-phantomjs-launcher": "1.0.0",
+    "karma-spec-reporter": "0.0.24",
+    "karma-webpack": "1.7.0",
+    "phantomjs-prebuilt": "2.1.4",
+    "rewire": "2.5.1",
+    "webdriverio": "4.0.3",
+    "webpack": "1.12.13"
+  },
+  "scripts": {
+    "start": "npm run webpack; node server",
+    "setup-webdriver": "(mkdir server/test/bin; cd server/test/bin; curl -O http://selenium-release.storage.googleapis.com/2.51/selenium-server-standalone-2.51.0.jar server/test)",
+    "start-webdriver": "java -jar server/test/bin/selenium-server-standalone-2.51.0.jar",
+    "test-client": "karma start config/karma.conf.js",
+    "test-integration": "node server/test/integration",
+    "test-server": "jasmine JASMINE_CONFIG_PATH=config/jasmine.json",
+    "test": "npm run test-client; npm run test-server",
+    "webpack": "webpack --config config/webpack.config.js"
   }
 }
