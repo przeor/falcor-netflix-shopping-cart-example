@@ -61,24 +61,32 @@ var Router = require('falcor-router'),
             because on the first look it was not intuitive approach for me (so I wasted time to make this lesson).
          */
         var results = [];
-        
 
         // this is a range of how 
         // many products have to be fetched from mongo's products collection
         var productsIndexesIds = pathSet[1];
-
         productsIndexesIds.forEach(productIndex => {
           if (mockedMongoDB[0]._view.length > productIndex) {
+
             // mongoDbProductId is a product ID that comes from products' collection 
             // (currently mocked and comes from mocked-mongo.js)
             var mongoDbProductId = mockedMongoDB[0]._view[productIndex];
-            var currentProductRef = $ref(['productsById', [mongoDbProductId]]);
+            var currentProductRef;
+
+            // checking if mongoDbProductId isn't a ref
+            if(mongoDbProductId.value !== undefined) {
+              currentProductRef = mongoDbProductId; // mongoDbProductId is already a ref
+            } else {
+              currentProductRef = $ref(['productsById', [mongoDbProductId]]);
+            }
+            
             results.push({
               path: ['_view', productIndex],
               value: currentProductRef  // it has to return a $ref here
             })
           }
         });
+
         console.log("2) *************** \n *************** \n ****** SECOND request in order to fetch $refs for productById \n  *************** \n ");
         console.log(JSON.stringify(results, null, 5));
         return results;
@@ -90,13 +98,18 @@ var Router = require('falcor-router'),
         var results = [];
 
         productIds.forEach(productIndex => {
-            var productValue = mockedMongoDB[0]["productsById"][productIndex]; // mocking fetch from DB
-            console.log(JSON.stringify(productValue, null, 5));
-            productValue.name = "[FROM productById("+productIndex+")]"+productValue.name;
-            results.push({
-              path: ["productsById", productIndex],
-              value: productValue
-            });
+          var productValue = mockedMongoDB[0]["productsById"][productIndex]; // mocking fetch from DB
+
+          if(productValue === undefined) { 
+            console.warn("Warning: productValue is undefined");
+            return;  // no product found with this ID
+          }
+
+          productValue.name = "[FROM productById("+productIndex+")]"+productValue.name;
+          results.push({
+            path: ["productsById", productIndex],
+            value: productValue
+          });
         });
         console.log("3) *************** \n *************** \n ****** THIRD (on-server-side only) the falcor-router follow-up the $ref from the _view[{integers}] route. It has been optimized, so this router's query is done only on the server (WOW-Falcor-Does-The-Optimization-For-US!). \n\n This Falcor's feature lower's client/backend http's requests latency! WOW!  \n  *************** \n ");
         console.log(JSON.stringify(results, null, 5));
@@ -163,7 +176,7 @@ var Router = require('falcor-router'),
           
           return results;
         }, function(err) {
-          // console.log(err); // Error: "It has broken"
+          console.log(err); // Error: "It has broken"
         });
       }
     }
